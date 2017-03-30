@@ -1,0 +1,40 @@
+#######################################
+# Syntax Coloring Map For ExampleLibrary
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Watch	KEYWORD1
+Display	KEYWORD1
+Vibro	KEYWORD1
+Comm	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Update	KEYWORD2
+UpdateDisplay	KEYWORD2
+ClearDisplay	KEYWORD2
+ClockDisplay	KEYWORD2
+AppointmentDisplay	KEYWORD2
+AlarmDisplay	KEYWORD2
+ProgramDisplay	KEYWORD2
+UpdateApptString	KEYWORD2
+Override	KEYWORD2
+CheckSerial	KEYWORD2
+ApptReady	KEYWORD2
+GetAppt	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

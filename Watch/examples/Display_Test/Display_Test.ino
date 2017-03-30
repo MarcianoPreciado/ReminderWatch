@@ -6,22 +6,24 @@
 #include <Wire.h>
 #include <Snooze.h>
 
-//Adafruit_SSD1306 disp(20);
-Display display(20, 14);
+const int oledPwrPin = 21;
+const int oledResetPin = 20;
+const int delta_t = 2750; // ms
+
+Display display(oledResetPin, oledPwrPin);
+
 SnoozeTimer timer;
-//SnoozeAlarm alarm;
 SnoozeBlock _config(timer);
 
 void setup() {
   display.Init();
-  timer.setTimer(5000);
-  //alarm.setAlarm(0,0,3); // RTC needed for Alarm
+  timer.setTimer(delta_t);
 }
 
 void loop() {
   display.ClearDisplay();
   display.ClockDisplay();
-  delay(5000);
+  delay(delta_t);
   // Insert SnoozeBlock configuration for wakeup.
   display.Off();
   int who = Snooze.hibernate(_config);
