@@ -3,7 +3,7 @@
  */
 #include "watch.h"
 
-const int vibPin = 23;
+const int vibPin = 15;
 Vibro vibro = Vibro(vibPin);
 
 void setup() {
