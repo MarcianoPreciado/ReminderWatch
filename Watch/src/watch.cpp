@@ -39,10 +39,12 @@ void Watch::Update(){
     _displayState = TIME;
   }
   else{
+    // If the screen has not been refreshed for longer than the refresh period
     if(millis() - displayUpdateStamp > _refreshRate){
       display.UpdateDisplay(_displayState, _alarmState);
     }
   }
+  // If it has been awake long enough
   if(millis() - displayInitStamp > _displayTime){
     SleepCycle();
   }
@@ -63,12 +65,8 @@ void Watch::SetAppt(const time_t appt){
   }
   // Add these to the struct of alarm times
   _alrmStruct = {appt, fb, hb, mo, db};
-  #ifndef orig_snooze
   _alarm.setAlarm(_alrmStruct.dbTime);
-  #endif
-  #ifdef orig_snooze
-
-  #endif
+  _config += _alarm;
 }
 
 // Checks buttons for a long press or a short press
@@ -121,23 +119,29 @@ int Watch::Sleep(){
   return Snooze.hibernate(_config);
 }
 
-int Watch::Awaken(int who){
+/* Checks the cause of awakening for validity and updates the time from onboard
+ * RTC.
+ * @param cause: int number returned from Sleep() function
+ * @return state: -1 if invalid wakeup, 0 for btn press, 1-5 for alarm based cause
+ *      corresponding to which alarm woke the cycle up.
+ */
+int Watch::Awaken(int cause){
   setTime(Teensy3Clock.get());
-  if(who == _ackBtn){
+  if(cause == _ackBtn){
     return 0;
   }
   // Check if we are near a timestamp for an alert time
-  else if(who == 35){
-    uint16_t tol = 45 * 1000; // 45 second tolerance
-    if(abs(millis() - _alrmStruct.aTime) <= tol)
+  else if(cause == 35){
+    uint16_t tol = 60 * 1000; // 60 second tolerance
+    if(abs(now() - _alrmStruct.aTime) <= tol)
       return 5; // TODO: MAKE APPT TIME ALERT
-    else if(abs(millis() - _alrmStruct.fbTime) <= tol)
+    else if(abs(now() - _alrmStruct.fbTime) <= tol)
       return 4;
-    else if(abs(millis() - _alrmStruct.hbTime) <= tol)
+    else if(abs(now() - _alrmStruct.hbTime) <= tol)
       return 3;
-    else if(abs(millis() - _alrmStruct.moTime) <= tol)
+    else if(abs(now() - _alrmStruct.moTime) <= tol)
       return 2;
-    else if(abs(millis() - _alrmStruct.dbTime) <= tol)
+    else if(abs(now() - _alrmStruct.dbTime) <= tol)
       return 1;
     else
       return -1;

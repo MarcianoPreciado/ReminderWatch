@@ -1,9 +1,9 @@
 /*
   Basic Setup
-  
+
   Runs the watch with full functionality. Vibrating motor disc,
   tactile switch button, and 128x32 I2C Adafruit OLED.
-  
+
   Circuit:
   * board        Teensy 3.2
   * vibrator     pin 15
