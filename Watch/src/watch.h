@@ -54,7 +54,7 @@ private:
   DisplayState _displayState = TIME;
   void UpdateVibro();
   static const uint16_t vibroTimeOn = 300;
-  static const uint16_t vibroTimeOff = 700;
+  static const uint16_t vibroTimeOff = 1000;
 
   // Sleep Functionality
   SnoozeAlarm _alarm;

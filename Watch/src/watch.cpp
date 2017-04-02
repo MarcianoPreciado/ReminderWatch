@@ -169,14 +169,18 @@ void Watch::SleepCycle(){
 
 // Vibrates 4 times once an alarm sounds, only vibrates while alarm is still active
 void Watch::UpdateVibro(){
+  // If the alarms are off, vibro is off
   if(_alarmState == OFF)
     vibro.Off();
+  // Otherwise vibrate 4 times for the alert
   else if(millis() - vibroStartStamp > 4*(vibroTimeOn + vibroTimeOff)){
-    if(vibro.IsOn() && millis() - vibratorChangeStamp > vibroTimeOn){
+    if(vibro.IsOn() && (millis() - vibratorChangeStamp > vibroTimeOn)){
       vibro.Off();
+      vibratorChangeStamp = millis();
     }
-    else if(!vibro.IsOn() && millis() - vibratorChangeStamp > vibroTimeOff){
+    else if(!vibro.IsOn() && (millis() - vibratorChangeStamp > vibroTimeOff)){
       vibro.On();
+      vibratorChangeStamp = millis();
     }
   }
 }
