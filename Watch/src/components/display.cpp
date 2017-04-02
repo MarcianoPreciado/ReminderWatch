@@ -33,17 +33,23 @@ bool Display::Init(){
 }
 
 bool Display::On(){
+  // Reinit I2C
   Wire.begin();
+  // Start OLED power back up
   digitalWrite(_pwr, HIGH);
-  disp.ssd1306_command(0x00);
-  delay(5);
-  disp.ssd1306_command(SSD1306_DISPLAYON);
+  delay(150);
+  // Restart OLED
+  disp.begin();
   return true;
 }
 
 int Display::Off(){
+  // Display shutdown sequence
+  ClearDisplay();
   disp.ssd1306_command(SSD1306_DISPLAYOFF);
-  //digitalWrite(_pwr, LOW);
+  digitalWrite(_pwr, LOW);
+  // Set I2C pins to high impedance
+  Wire.end();
   pinMode(SDA, INPUT);
   pinMode(SCL, INPUT);
   digitalWrite(SDA, LOW);
