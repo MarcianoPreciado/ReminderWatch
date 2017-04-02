@@ -13,7 +13,6 @@ public:
   ~Watch();
 
   void Update();
-  void SetAppt(const time_t);
 private:
   static const uint8_t _refreshRate = 220;      // Time bewteen screen refreshes (ms)
   static const uint16_t _displayTime = 5100;      // Time that the display stays on after button press (ms)
@@ -34,6 +33,7 @@ private:
   stamp sleepFlagDisableStamp = 0;       // Records the last time the SleepFlag was disabled
 
   // Private Functions
+  void SetAppt(const time_t);
   void CheckButtons();
   void ShortButtonPress();
   void LongButtonPress();
