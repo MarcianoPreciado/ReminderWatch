@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->groupBox->show();
+    ui->label_5->setText("");
     ui->groupBox_2->hide();
     ui->groupBox_3->hide();
     com.setBaudRate(QSerialPort::Baud9600);
@@ -43,21 +44,22 @@ bool findPort();
 
 //============== B U T T O N  C L I C K S ===================
 
-/*
- * Searches for MCU and moves on to next page
+/* Searches for MCU and moves on to next page
  */
 void MainWindow::on_connectButton_clicked()
 {
+    ui->label_5->setText("Searching for device. May take 3 sec to connect");
     bool connected = findPort();
     if(connected){
     // Switch to next page
     ui->groupBox->hide();
     ui->groupBox_2->show();
+    return;
     }
+    ui->label_5->setText("Device not found.");
 }
 
-/*
- * Moves to next page. Records date and time pickers
+/* Moves to next page. Records date and time pickers
  */
 void MainWindow::on_nextButton_clicked()
 {
@@ -67,7 +69,7 @@ void MainWindow::on_nextButton_clicked()
     // Move to next page
     ui->groupBox_2->hide();
     ui->groupBox_3->show();
-
+    // Sync the current time on the watch
     com.setPortName(portName);
     com.open(QIODevice::ReadWrite);
     syncTime();
@@ -76,10 +78,14 @@ void MainWindow::on_nextButton_clicked()
       read.append(com.readAll());
     QString s_read = read;
     com.close();
+    // Update time_label and date_label
+    QString time_string = apptTime.toString();
+    QString date_string = apptDate.toString();
+    ui->time_label->setText(time_string);
+    ui->date_label->setText(date_string);
 }
 
-/*
- * Takes you back to the previous screen
+/* Takes you back to the previous screen
  */
 void MainWindow::on_previousButton_clicked()
 {
@@ -88,8 +94,7 @@ void MainWindow::on_previousButton_clicked()
     ui->groupBox_2->show();
 }
 
-/*
- * Sends the time messages to the MCU and closes the UI
+/* Sends the time messages to the MCU and closes the UI
  */
 void MainWindow::on_finishButton_clicked()
 {
@@ -100,21 +105,20 @@ void MainWindow::on_finishButton_clicked()
     read.append(com.readAll());
   QString s_read = read;
   com.close();
+  this->close();
 }
 
 //================ D A T E  T I M E  P I C K ===================
 
 
-/*
- * When finished editing the time, record the time
+/* When finished editing the time, record the time
  */
 void MainWindow::on_timeEdit_editingFinished()
 {
     apptTime = ui->timeEdit->time();
 }
 
-/*
- * When finished editing the date, record the date
+/* When finished editing the date, record the date
  */
 void MainWindow::on_dateEdit_editingFinished()
 {
@@ -123,8 +127,7 @@ void MainWindow::on_dateEdit_editingFinished()
 
 //================ C O M  P O R T  F U N C T S ===================
 
-/*
- * Construct date message in format of "hh:mm:ss|dd/mm/yy"
+/* Construct date message in format of "hh:mm:ss|dd/mm/yy"
  */
 QString makeMessage(QDate date, QTime time)
 {
@@ -142,8 +145,7 @@ QString makeMessage(QDate date, QTime time)
     return message;
 }
 
-/*
- * Sends the appointment time in the format "a.hh:mm|dd/mm/yy"
+/* Sends the appointment time in the format "a.hh:mm|dd/mm/yy"
  */
 void sendAppt()
 {
@@ -151,8 +153,7 @@ void sendAppt()
   com.write(buffer.toStdString().c_str(), buffer.length());
 }
 
-/*
- * Sends the current time in the format "s.hh:mm|dd/mm/yy"
+/* Sends the current time in the format "s.hh:mm|dd/mm/yy"
  */
 void syncTime()
 {
@@ -160,8 +161,7 @@ void syncTime()
   com.write(buffer.toStdString().c_str(), buffer.length());
 }
 
-/*
- * Sends the handshake out to a port. If the correct
+/* Sends the handshake out to a port. If the correct
  * byte is received, returns true and changes portName to input port.
  */
 bool handShake(QString port){
@@ -186,8 +186,7 @@ bool handShake(QString port){
   return false;
 }
 
-/*
- * Cycles through all port names and attempts handshake with each.
+/* Cycles through all port names and attempts handshake with each.
  * Returns false if no port found, true if a valid port is found.
  */
 bool findPort(){
