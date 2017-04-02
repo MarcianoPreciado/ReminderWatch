@@ -16,7 +16,9 @@ void Comm::CheckSerial(){
   	if(mes.startsWith('s')){
   		Serial.print("Time Synced");	// Respond with acknowlegement
   		mes.remove(0,mes.indexOf('.')+1);
-      setTime(StringToTimeT(mes)); // Set current time to message time
+      time_t t = StringToTimeT(mes);
+      setTime(t); // Set current time to message time
+      Teensy3Clock.set(t);
   	}
   	else if(mes.startsWith('a')){
   		Serial.print('Appt Set');	// Respond with acknowlegement
